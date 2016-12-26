@@ -8,7 +8,7 @@ using System.Collections;
 /// 功能 : 3个参数的初始化
 /// </summary>
 public interface IEntity3 : IEntity {
-    void DoReInit<T1, T2,T3>(T1 t1, T2 kt2,T3 t3);
+    void DoReInit<T1, T2,T3>(T1 t1, T2 t2,T3 t3);
     
-    void DoInit<T1, T2, T3>(T1 t1, T2 kt2, T3 t3);
+    void DoInit<T1, T2, T3>(T1 t1, T2 t2, T3 t3);
 }

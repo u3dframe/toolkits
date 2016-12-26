@@ -9,7 +9,7 @@ using System.Collections;
 /// </summary>
 public interface IEntity2 : IEntity {
     
-    void DoReInit<T1,T2>(T1 t1,T2 kt2);
+    void DoReInit<T1,T2>(T1 t1,T2 t2);
     
-    void DoInit<T1, T2>(T1 t1, T2 kt2);
+    void DoInit<T1, T2>(T1 t1, T2 t2);
 }
