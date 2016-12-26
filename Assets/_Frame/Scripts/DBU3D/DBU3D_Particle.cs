@@ -8,7 +8,8 @@ using System.Collections.Generic;
 /// 功能 :  
 /// </summary>
 [System.Serializable]
-public class DBU3D_Particle : System.Object {
+public class DBU3D_Particle : System.Object
+{
     List<ParticleSystem> listAll = new List<ParticleSystem>();
     List<Renderer> listAllRenders = new List<Renderer>();
 
@@ -17,6 +18,9 @@ public class DBU3D_Particle : System.Object {
     int lens = 0;
     float curSize = -1;
     float _curScale = 1;
+
+    // 当前速度的倍数值
+    float _cur_speed_rate = 1;
 
     // 1:play,2:pause,other:stop
     int _curState = 0;
@@ -30,8 +34,9 @@ public class DBU3D_Particle : System.Object {
     {
         DoReInit(gobj);
     }
-    
-    public void DoReInit(GameObject gobj) {
+
+    public void DoReInit(GameObject gobj)
+    {
         DoClear();
         DoInit(gobj);
     }
@@ -76,17 +81,20 @@ public class DBU3D_Particle : System.Object {
 
             key = ps.GetInstanceID();
             vList = new List<float>();
-            vList.Add(ps.startSpeed);
             vList.Add(ps.startSize);
             vList.Add(ps.gravityModifier);
+            vList.Add(ps.startSpeed);
+            vList.Add(ps.playbackSpeed);
             dicDefaultScale.Add(key, vList);
         }
     }
 
-    public void DoClear() {
+    public void DoClear()
+    {
         DoClearParticle();
 
         lens = 0;
+        _cur_speed_rate = 1;
 
         listAll.Clear();
         listAllRenders.Clear();
@@ -138,9 +146,9 @@ public class DBU3D_Particle : System.Object {
         {
             ps = listAll[i];
             vList = dicDefaultScale[ps.GetInstanceID()];
-            ps.startSpeed = _scale * (vList[0]);
-            ps.startSize = _scale * (vList[1]);
-            ps.gravityModifier = _scale * (vList[2]);
+            ps.startSize = _scale * (vList[0]);
+            ps.gravityModifier = _scale * (vList[1]);
+            // ps.startSpeed = _scale * (vList[2]);
         }
     }
 
@@ -230,13 +238,13 @@ public class DBU3D_Particle : System.Object {
         }
         return render.material;
     }
-    
+
     public int curState
     {
         get { return _curState; }
     }
 
-    // 模拟
+    // 模拟快进 -在给定一段时间内通过模拟粒子快进粒子系统，然后暂停它
     public void Simulate(float timeProgress)
     {
         if (lens <= 0)
@@ -248,6 +256,43 @@ public class DBU3D_Particle : System.Object {
         {
             ps = listAll[i];
             ps.Simulate(timeProgress);
+        }
+    }
+
+    // 设置播放速度 1 为正常
+    public void SetSpeed(float speed)
+    {
+        if (lens <= 0)
+        {
+            return;
+        }
+        ParticleSystem ps;
+        for (int i = 0; i < lens; i++)
+        {
+            ps = listAll[i];
+            ps.startSpeed = speed;
+            ps.playbackSpeed = speed;
+        }
+    }
+
+    public void SetSpeedRate(float speedRate)
+    {
+        if (lens <= 0 && _cur_speed_rate != speedRate)
+        {
+            return;
+        }
+        _cur_speed_rate = speedRate;
+
+        DoClearParticle();
+
+        ParticleSystem ps;
+        List<float> vList;
+        for (int i = 0; i < lens; i++)
+        {
+            ps = listAll[i];
+            vList = dicDefaultScale[ps.GetInstanceID()];
+            ps.startSpeed = speedRate * (vList[2]);
+            ps.playbackSpeed = speedRate * (vList[3]);
         }
     }
 }
