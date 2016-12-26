@@ -17,7 +17,9 @@ public class DBU3D_Particle : System.Object {
     int lens = 0;
     float curSize = -1;
     float _curScale = 1;
-    bool _curState = false;
+
+    // 1:play,2:pause,other:stop
+    int _curState = 0;
 
     // 该粒子的最长时间
     float _maxTime = 1f;
@@ -82,9 +84,27 @@ public class DBU3D_Particle : System.Object {
     }
 
     public void DoClear() {
+        DoClearParticle();
+
+        lens = 0;
+
         listAll.Clear();
         listAllRenders.Clear();
         dicDefaultScale.Clear();
+    }
+
+    void DoClearParticle()
+    {
+        ParticleSystem ps;
+        for (int i = 0; i < lens; i++)
+        {
+            ps = listAll[i];
+            if (ps)
+            {
+                ps.Clear();
+                ps.time = 0;
+            }
+        }
     }
 
     public void SetSize(float size)
@@ -110,12 +130,13 @@ public class DBU3D_Particle : System.Object {
         }
         _curScale = _scale;
 
+        DoClearParticle();
+
         ParticleSystem ps;
         List<float> vList;
         for (int i = 0; i < lens; i++)
         {
             ps = listAll[i];
-            ps.Clear();     //例子prewarm 引起的bug, fix by haoc
             vList = dicDefaultScale[ps.GetInstanceID()];
             ps.startSpeed = _scale * (vList[0]);
             ps.startSize = _scale * (vList[1]);
@@ -123,24 +144,30 @@ public class DBU3D_Particle : System.Object {
         }
     }
 
-    public void ChangeState(bool _isPause)
+    public void ChangeState(int state)
     {
-        if (lens <= 0 || _curState == _isPause)
+        if (lens <= 0)
         {
             return;
         }
         ParticleSystem ps;
-        _curState = _isPause;
+        _curState = state;
         for (int i = 0; i < lens; i++)
         {
             ps = listAll[i];
-            if (_curState)
+            switch (_curState)
             {
-                ps.Pause();
-            }
-            else
-            {
-                ps.Play();
+                case 1:
+                    ps.Play(false);
+                    break;
+                case 2:
+                    ps.Pause(false);
+                    break;
+                default:
+                    ps.Stop(false);
+                    ps.Clear(false);
+                    ps.time = 0;
+                    break;
             }
         }
     }
@@ -204,8 +231,23 @@ public class DBU3D_Particle : System.Object {
         return render.material;
     }
     
-    public bool curState
+    public int curState
     {
         get { return _curState; }
+    }
+
+    // 模拟
+    public void Simulate(float timeProgress)
+    {
+        if (lens <= 0)
+        {
+            return;
+        }
+        ParticleSystem ps;
+        for (int i = 0; i < lens; i++)
+        {
+            ps = listAll[i];
+            ps.Simulate(timeProgress);
+        }
     }
 }

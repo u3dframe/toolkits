@@ -34,7 +34,7 @@ public class UIExParticleSystem : MonoBehaviour {
 
     public void changeState(bool _isPause)
     {
-        m_db_particle.ChangeState(_isPause);
+        m_db_particle.ChangeState(_isPause ? 2 : 1);
     }
 
     public float curScale
@@ -77,7 +77,7 @@ public class UIExParticleSystem : MonoBehaviour {
             setScale(scaleInEditor);
         }
 
-        if (m_db_particle.curState != isPasueInEditor)
+        if ((m_db_particle.curState == 1 && !isPasueInEditor) || (m_db_particle.curState == 2 && isPasueInEditor))
         {
             changeState(isPasueInEditor);
         }
