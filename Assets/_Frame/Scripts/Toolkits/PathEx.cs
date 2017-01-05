@@ -38,6 +38,12 @@ namespace Toolkits
 			return Path.GetFileName (fn);
 		}
 
+        // 文件名字(不含扩展名)
+        static public string getFileNameNoSuffix(string fn)
+        {
+            return Path.GetFileNameWithoutExtension(fn);
+        }
+
 		// 文件全路径
 		static public string getFullPath (string fn)
 		{
