@@ -10,7 +10,7 @@ using Toolkits;
 /// </summary>
 public class UIExParticleSystem : MonoBehaviour {
 
-    DBU3D_Particle m_db_particle = new DBU3D_Particle();
+	EN_Particle m_db_particle = new EN_Particle();
 
     void Awake()
     {
