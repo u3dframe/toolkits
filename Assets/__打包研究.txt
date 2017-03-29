@@ -1,0 +1,28 @@
+u5自己带的打包模式
+会在根目录节点处生成一个资源，里面值放了一个AssetBundleManifest 资源
+
+比如
+path = xxx/StreamingAssets/AssetBundles/Windows/
+BuildPipeline.BuildAssetBundles (path, 0, EditorUserBuildSettings.activeBuildTarget);
+
+path最后的路径名字是Windows，会在该path的最后一个Windows文件夹下面生成一个名叫Windows的assetbundle资源，和Manifest资源,
+该Windows的assetbundle资源里面只有一个资源 AssetBundleManifest，该Asset资源是记录所以资源名的assetbundle.name 和该资源的依赖关系Dependencies
+
+所有资源名的manifest没有多大的实际意义，都是从这个主要的AssetBundleManifest去找寻资源路径
+
+思路
+Prefab的name --> 所生成的ab的name --> 生成路径+ab的name得到资源path
+
+所以在生成资源后，要记录的是
+Prefab的name --> ab的name 的关系文件 --> reship.txt
+
+如果要判断资源文件是否有变化，还要记录
+ab|md5
+ab.manifest|md5
+的文件files.txt
+
+根据生成的ab.manifest 文件可以取得该文件用到的资源路径
+Assets:
+- Assets/...
+- Assets/...
+多个资源同在一个ab里面,该关系需要记录
