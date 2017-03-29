@@ -41,6 +41,31 @@ namespace Core
 			Debug.Log ("8 =" + (obj == null));
 			Debug.Log ("===============");
 
+			string pathRoot = Core.Kernel.ReadWriteHelp.m_windowsPath;
+			AssetBundle ab = LoadAssetBundle(pathRoot+Core.Kernel.ReadWriteHelp.platformWindows);
+			Object[] objs = ab.LoadAllAssets ();
+			AssetBundleManifest mainfest = ab.LoadAsset<AssetBundleManifest> ("AssetBundleManifest");
+			// unity 5以上只有一个Manifest，就是打包得到的资源路径下面和最后一个文件夹名字一样的文件里面
+			string abName = "fab";
+			if (mainfest != null) {
+				string[] abnames = mainfest.GetAllAssetBundles ();
+				foreach (var item in abnames) {
+					Debug.Log ("abname = " + item);
+				}
+
+				string[] relshops = mainfest.GetAllDependencies (abName);
+				foreach (var item in relshops) {
+					Debug.Log ("shipname = " + item);
+				}
+			}
+		}
+
+	
+
+		static AssetBundle LoadAssetBundle(string path){
+			byte[] data = System.IO.File.ReadAllBytes (path);
+			return AssetBundle.LoadFromMemory (data);
 		}
 	}
+
 }

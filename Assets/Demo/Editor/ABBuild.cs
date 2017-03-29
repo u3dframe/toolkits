@@ -1,12 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
+using System.IO;
+using Core.Kernel;
 
 public class ABBuild : Editor {
-	[MenuItem("Window/BuildAB")]
-	static void Build(){		
-		 BuildPipeline.BuildAssetBundles (Application.dataPath + "/Build", 0, EditorUserBuildSettings.activeBuildTarget);
+	[MenuItem("Window/BuildABWindows")]
+	static void BuildWindows(){
+		string path = ReadWriteSupport.m_windowsPath;
+		if (!Directory.Exists (path)) {
+			Directory.CreateDirectory (path);
+		}
+
+		BuildPipeline.BuildAssetBundles (path, 0, EditorUserBuildSettings.activeBuildTarget);
 		// AssetBundleBuild[] bulid = new AssetBundleBuild[5];
-		Core.AssetManager.Test();
+		// Core.AssetManager.Test();
 	}
 }

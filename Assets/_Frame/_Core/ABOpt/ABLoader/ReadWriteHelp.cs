@@ -13,11 +13,19 @@ namespace Core.Kernel{
 		// 文件夹分割符号
 		static public readonly char DSChar = Path.DirectorySeparatorChar;
 
+		// 平台
+		static public readonly string platformAndroid = "Android";
+		static public readonly string platformIOS = "IOS";
+		static public readonly string platformWindows = "Windows";
+
 		// 编辑器下面资源所在跟目录
 		static public readonly string m_assets = "Assets";
 
-		// 资源目录
-		static public string m_gameRoot = "GameName";
+		// 解压资源目录根目录
+		static public string m_unCompressRoot = "GameName";
+
+		// 流文件根目录 - 包内文件根目录
+		static public string m_gameAssetName = "AssetBundles";
 	}
 
 	/// <summary>
@@ -45,23 +53,27 @@ namespace Core.Kernel{
 				#endif
 			#endif
 		
-		// 打包后资源所放的文件名
-		static public string m_gameAssetName = "AssetBundles";
-
 		// 打包平台名
-		static public readonly string m_platform = 
-			#if UNITY_EDITOR
-			"Windows";
-			#else
-				#if UNITY_ANDROID
-				"Android";
-				#elif UNITY_IOS
-				"IOS";
-				#else
-				"Windows";
-				#endif
-			#endif
-		
+		static string _m_platform = "";
+		static public string m_platform{
+			get{
+				if (string.IsNullOrEmpty (_m_platform)) {
+					_m_platform = 
+					#if UNITY_ANDROID
+					platformAndroid;
+					#elif UNITY_IOS
+					platformIOS;
+					#else
+					platformWindows;
+					#endif
+				}
+				return _m_platform;
+			}
+			set{
+				_m_platform = value;
+			}
+		} 
+
 		// 游戏包内资源目录
 		static string _m_appContentPath = "";
 		static public string m_appContentPath{
@@ -78,23 +90,23 @@ namespace Core.Kernel{
 		static public string m_appUnCompressPath{
 			get{
 				if (string.IsNullOrEmpty (_m_appUnCompressPath)) {
-					string game = m_gameRoot.ToLower ();
+					string unCompressRoot = m_unCompressRoot.ToLower ();
 					#if UNITY_EDITOR
 						#if UNITY_STANDALONE_WIN
-						_m_appUnCompressPath =  "c:/" + game + DSChar;
+						_m_appUnCompressPath =  "c:/" + unCompressRoot + DSChar;
 						#else
 						int i = Application.dataPath.LastIndexOf('/');
-						_m_appUnCompressPath =  Application.dataPath.Substring(0, i + 1) + game + "/";
+						_m_appUnCompressPath =  Application.dataPath.Substring(0, i + 1) + unCompressRoot + DSChar;
 						#endif
 					#else
 						#if UNITY_ANDROID || UNITY_IOS
-						_m_appUnCompressPath =  Application.persistentDataPath + DSChar + game + DSChar;
+						_m_appUnCompressPath =  Application.persistentDataPath + DSChar + unCompressRoot + DSChar;
 						#elif UNITY_STANDALONE
 						// 平台(windos,mac)上面可行??? 需要测试
-						_m_appUnCompressPath =  Application.persistentDataPath + DSChar + game + DSChar;
+						_m_appUnCompressPath =  Application.persistentDataPath + DSChar + unCompressRoot + DSChar;
 						#else
 						// 可行???
-						_m_appUnCompressPath =  Application.persistentDataPath + DSChar + game + DSChar;
+						_m_appUnCompressPath =  Application.persistentDataPath + DSChar + unCompressRoot + DSChar;
 						#endif
 					#endif
 				}
@@ -102,14 +114,27 @@ namespace Core.Kernel{
 			}
 		}
 
-
-		// 是否解压(其实就是拷贝包内资源到可读写文件夹下面)
-		static public bool m_isUnCompresss = false;
-
-		// 资源目录
-		static public string m_dataPath {
+		// 打包生成的流文件 - windows资源路径
+		static public string m_windowsPath{
 			get{
-				return m_isUnCompresss ? m_appUnCompressPath : m_appUnCompressPath;
+				m_platform = platformWindows;
+				return m_appContentPath;
+			}
+		}
+
+		// 打包生成的流文件 - android资源路径
+		static public string m_androidPath{
+			get{
+				m_platform = platformAndroid;
+				return m_appContentPath;
+			}
+		}
+
+		// 打包生成的流文件 - IOS资源路径
+		static public string m_iosPath{
+			get{
+				m_platform = platformIOS;
+				return m_appContentPath;
 			}
 		}
 	}
