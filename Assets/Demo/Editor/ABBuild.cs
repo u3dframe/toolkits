@@ -14,6 +14,6 @@ public class ABBuild : Editor {
 
 		BuildPipeline.BuildAssetBundles (path, 0, EditorUserBuildSettings.activeBuildTarget);
 		// AssetBundleBuild[] bulid = new AssetBundleBuild[5];
-		// Core.AssetManager.Test();
+		 Core.AssetManager.Test();
 	}
 }
