@@ -85,9 +85,9 @@ internal class GameObjectPool
 	// 创建
 	private GameObject NewObjectInstance ()
 	{
-		if (poolObjectPrefab != null)
-			return GameObject.Instantiate (poolObjectPrefab) as GameObject;
-		return null;
+		if (poolObjectPrefab == null)
+			return null;
+		return GameObject.Instantiate (poolObjectPrefab) as GameObject;
 	}
 
 	// 取得一个对象
@@ -98,14 +98,12 @@ internal class GameObjectPool
 			poolSize = availableObjStack.Count;
 			if (poolSize > 0) {
 				go = availableObjStack.Pop ();
-				borrowNum++;
 			} else {
 				go = NewObjectInstance ();
-				if (go != null)
-					borrowNum++;
 			}
 
 			if (go != null) {
+				borrowNum++;
 				if (!string.IsNullOrEmpty (fabName)) {
 					go.name = fabName;
 				}
