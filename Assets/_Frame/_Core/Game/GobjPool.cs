@@ -85,7 +85,9 @@ internal class GameObjectPool
 	// 创建
 	private GameObject NewObjectInstance ()
 	{
-		return GameObject.Instantiate (poolObjectPrefab) as GameObject;
+		if (poolObjectPrefab != null)
+			return GameObject.Instantiate (poolObjectPrefab) as GameObject;
+		return null;
 	}
 
 	// 取得一个对象
@@ -99,7 +101,8 @@ internal class GameObjectPool
 				borrowNum++;
 			} else {
 				go = NewObjectInstance ();
-				borrowNum++;
+				if (go != null)
+					borrowNum++;
 			}
 
 			if (go != null) {
