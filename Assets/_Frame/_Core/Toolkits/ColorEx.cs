@@ -51,9 +51,26 @@ namespace Toolkits
 			return r2;
 		}
 
+		static public Color GetColor (byte r, byte g, byte b, byte a)
+		{
+			return new Color32 (r, g, b, a);
+		}
+
+		static public Color GetColor2 (int r, int g, int b, int a){
+			return GetColor ((byte)r, (byte)g, (byte)b, (byte)a);
+		}
+
 		static public Color GetColor (int r, int g, int b)
 		{
 			return GetColor (r, g, b, 255);
+		}
+
+		static public Color ParseBy(Color32 col){
+			return (Color)col;
+		}
+
+		static public Color32 ParseBy(Color col){
+			return (Color32)col;
 		}
 	}
 }
