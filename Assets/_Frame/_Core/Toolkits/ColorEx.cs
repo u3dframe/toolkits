@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-/// <summary>
-/// 类名 : 颜色 工具
-/// 作者 : Canyon
-/// 日期 : 2016-12-23 15:20
-/// 功能 :
-/// </summary>
 namespace Toolkits
 {
+	/// <summary>
+	/// 类名 : 颜色 工具
+	/// 作者 : Canyon
+	/// 日期 : 2016-12-23 15:20
+	/// 功能 :
+	/// </summary>
 	public class ColorEx
 	{
 		/// <summary>
@@ -31,46 +31,92 @@ namespace Toolkits
 
 		static public Color GetGrayColor ()
 		{
-			Color r2 = GetColor (255, 255, 255, 160);
-			return r2;
+			return ToColor (255, 255, 255, 160);
 		}
 
 		static public Color GetGrayColor2 ()
 		{
-			Color r2 = GetColor (104, 104, 104, 100);
-			return r2;
+			return ToColor (104, 104, 104, 100);
 		}
 
-		static public Color GetColor (int r, int g, int b, int a)
+		static public Color ToColor (float red, float green, float blue, float alpha){
+			if (red > 1)
+				red = red / 255f;
+			
+			if (green > 1)
+				green = green / 255f;
+			
+			if (blue > 1)
+				blue = blue / 255f;
+
+			if (alpha > 1)
+				alpha = alpha / 255f;
+
+			return new Color (red, green, blue, alpha);
+		}
+
+		static public Color ToColor (float r, float g, float b){
+			return ToColor (r, g, b, 1);
+		}
+
+		static public Color ToColor (int r, int g, int b, int a)
 		{
-			float rf = r / 255f;
-			float gf = g / 255f;
-			float bf = b / 255f;
-			float af = a / 255f;
-			Color r2 = new Color (rf, gf, bf, af);
-			return r2;
+			return ToColor((float)r,(float)g,(float)b,(float)a);
 		}
 
-		static public Color GetColor (byte r, byte g, byte b, byte a)
+		static public Color ToColor (int r, int g, int b)
+		{
+			return ToColor (r, g, b, 255);
+		}
+
+		static public Color ToColor (byte r, byte g, byte b, byte a)
 		{
 			return new Color32 (r, g, b, a);
 		}
 
-		static public Color GetColor2 (int r, int g, int b, int a){
-			return GetColor ((byte)r, (byte)g, (byte)b, (byte)a);
-		}
-
-		static public Color GetColor (int r, int g, int b)
+		static public Color ToColor (byte r, byte g, byte b)
 		{
-			return GetColor (r, g, b, 255);
+			return ToColor(r, g, b, (byte)255);
 		}
 
-		static public Color ParseBy(Color32 col){
+		static public Color ToColor2 (int r, int g, int b, int a){
+			return ToColor ((byte)r, (byte)g, (byte)b, (byte)a);
+		}
+
+		static public Color ToColor2 (int r, int g, int b){
+			return ToColor ((byte)r, (byte)g, (byte)b);
+		}
+
+		static public Color ToColor(Color32 col){
 			return (Color)col;
 		}
 
-		static public Color32 ParseBy(Color col){
+		// parse 解析
+		static public Color32 ToColor32(Color col){
 			return (Color32)col;
+		}
+
+		/// <summary>
+		/// 16进制转为Color颜色,#101010
+		/// </summary>
+		/// <returns>The to color.</returns>
+		/// <param name="hex">Hex.[可以为(#101010)，也可以无#号即为(1a1d1f)]</param>
+		static public Color HexToColor(string hex){
+			int indexBeg = 0;
+			int lens = 2;
+
+			if (hex.IndexOf ("#") == 0) {
+				indexBeg = 1;
+			}
+
+			byte r = byte.Parse (hex.Substring (indexBeg,lens), System.Globalization.NumberStyles.HexNumber);
+			indexBeg += lens;
+
+			byte g = byte.Parse (hex.Substring (indexBeg,lens), System.Globalization.NumberStyles.HexNumber);
+			indexBeg += lens;
+
+			byte b = byte.Parse (hex.Substring (indexBeg,lens), System.Globalization.NumberStyles.HexNumber);
+			return ToColor (r, g, b);
 		}
 	}
 }
