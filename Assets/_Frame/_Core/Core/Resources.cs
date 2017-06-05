@@ -9,15 +9,7 @@ namespace Core.Kernel{
 	/// 日期 : 2017-03-28 17:06
 	/// 功能 : 读取Assets下面的资源
 	/// </summary>
-	public class ResourcesDevelop {
-
-		// 是否是放到了Resources下面
-		static readonly string m_fnResources = "Resources";
-		static readonly int m_iLenFnResources = m_fnResources.Length + 1;
-
-		// 处理Assset路径
-		static readonly string m_fnAssests = "Assets";
-		static readonly int m_iLenFnAssests = m_fnAssests.Length + 1;
+	public partial class Resources : ReadWriteHelp {
 
 		/// <summary>
 		/// Load the specified path.
@@ -30,7 +22,7 @@ namespace Core.Kernel{
 			int index = path.LastIndexOf (m_fnResources);
 			if(index < 0){
 				// 去掉第一个Assets文件夹路径
-				index = path.IndexOf(m_fnAssests);
+				index = path.IndexOf(m_assets);
 				if (index >= 0) {
 					path = path.Substring (index + m_iLenFnAssests);
 				}
@@ -39,6 +31,7 @@ namespace Core.Kernel{
 				if (string.IsNullOrEmpty (suffix2)) {
 					path += suffix;
 				}
+
 				ret = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
 			}
 			#endif
@@ -71,15 +64,11 @@ namespace Core.Kernel{
 		}
 
 		static public UnityEngine.Object Load4Png(string path){
-			return Load4Develop (path, ".png");
+			return Load4Develop (path, m_extLowerPng);
 		}
 
 		static public UnityEngine.Object Load4Prefab(string path){
-			return Load4Develop (path, ".prefab");
+			return Load4Develop (path, m_extLowerFab);
 		}
-	}
-
-	public class Resources : ResourcesDevelop {
-		
 	}
 }

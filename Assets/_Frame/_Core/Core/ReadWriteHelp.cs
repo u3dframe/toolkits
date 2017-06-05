@@ -19,13 +19,33 @@ namespace Core.Kernel{
 		static public readonly string platformWindows = "Windows";
 
 		// 编辑器下面资源所在跟目录
-		static public readonly string m_assets = "Assets";
+		static protected readonly string m_assets = "Assets";
+		static protected readonly int m_iLenFnAssests = m_assets.Length + 1;
+
+		// Resources目录下面
+		static protected readonly string m_fnResources = "Resources";
+		static protected readonly int m_iLenFnResources = m_fnResources.Length + 1;
+
+		// 编辑模式下的资源后缀名
+		static public readonly string m_extLowerPng = ".png";
+		static public readonly string m_extLowerFab = ".prefab";
+
+		/// <summary>
+		/// 编辑器模式下是否通过加载ab资源得到
+		/// </summary>
+		static public bool m_isEdtiorLoadAsset = false;
 
 		// 解压资源目录根目录
 		static public string m_unCompressRoot = "GameName";
 
-		// 流文件根目录 - 包内文件根目录
+		// 流文件下，加压根目录下的资源根目录
 		static public string m_gameAssetName = "AssetBundles";
+
+		// 开发模式下，资源放的路径地址
+		static public string m_edtAssetPath = "xxx/Builds";
+
+		// 开发模式下，放到Resources目录下的资源地址
+		static public string m_edtResPath = "xxx/Resources";
 	}
 
 	/// <summary>
@@ -35,8 +55,14 @@ namespace Core.Kernel{
 	/// 功能 : 读取包内包外资源，写(热更新下载的资源进行写入操作)
 	/// </summary>
 	public class ReadWriteHelp : ReadDevelop {
-		
-		// 流文件夹
+
+		// 编辑模式下Assets文件夹路径
+		static public readonly string m_dataPath = Application.dataPath + DSChar;
+
+		// 外部可读写的文件夹路径
+		static public readonly string m_persistentDataPath = Application.persistentDataPath + DSChar;
+
+		// 流文件夹路径
 		static public readonly string m_streamingAssets = Application.streamingAssetsPath + DSChar;
 
 		// 自己封装的
@@ -72,14 +98,39 @@ namespace Core.Kernel{
 			set{
 				_m_platform = value;
 			}
-		} 
+		}
+
+		// 资源相对路径
+		static public string m_assetPlatformPath{
+			get{
+				string ret = string.Format("{0}{1}{2}{3}",m_gameAssetName , DSChar , m_platform , DSChar);
+				#if UNITY_EDITOR
+				if(!m_isEdtiorLoadAsset)
+					ret = string.Format("{0}{1}",m_edtAssetPath , DSChar);
+				#endif
+				return ret;
+			}
+		}
+
+		// 编辑模式下资源根目录
+		static string _m_appAssetPath = "";
+		static public string m_appAssetPath{
+			get{
+				if (string.IsNullOrEmpty (_m_appAssetPath)) {
+					_m_appAssetPath = string.Format("{0}{1}",m_dataPath , m_assetPlatformPath);
+					_m_appAssetPath = ReplaceSeparator (_m_appAssetPath);
+				}
+				return _m_appAssetPath;
+			}
+		}
 
 		// 游戏包内资源目录
 		static string _m_appContentPath = "";
 		static public string m_appContentPath{
 			get{
 				if (string.IsNullOrEmpty (_m_appContentPath)) {
-					_m_appContentPath = m_streamingAssets + m_gameAssetName + DSChar + m_platform + DSChar;
+					_m_appContentPath = string.Format("{0}{1}",m_streamingAssets , m_assetPlatformPath);
+					_m_appContentPath = ReplaceSeparator (_m_appContentPath);
 				}
 				return _m_appContentPath;
 			}
@@ -93,22 +144,23 @@ namespace Core.Kernel{
 					string unCompressRoot = m_unCompressRoot.ToLower ();
 					#if UNITY_EDITOR
 						#if UNITY_STANDALONE_WIN
-						_m_appUnCompressPath =  "c:/" + unCompressRoot + DSChar;
+						_m_appUnCompressPath = string.Format("{0}{1}{2}{3}","c:/" , unCompressRoot , DSChar , m_assetPlatformPath);
 						#else
 						int i = Application.dataPath.LastIndexOf('/');
-						_m_appUnCompressPath =  Application.dataPath.Substring(0, i + 1) + unCompressRoot + DSChar;
+						_m_appUnCompressPath = Application.dataPath.Substring(0, i + 1) + unCompressRoot + DSChar + m_assetPlatformPath;
 						#endif
 					#else
 						#if UNITY_ANDROID || UNITY_IOS
-						_m_appUnCompressPath =  Application.persistentDataPath + DSChar + unCompressRoot + DSChar;
+						_m_appUnCompressPath = string.Format("{0}{1}{2}{3}",m_persistentDataPath , unCompressRoot , DSChar , m_assetPlatformPath);
 						#elif UNITY_STANDALONE
 						// 平台(windos,mac)上面可行??? 需要测试
-						_m_appUnCompressPath =  Application.persistentDataPath + DSChar + unCompressRoot + DSChar;
+						_m_appUnCompressPath = string.Format("{0}{1}{2}{3}",m_persistentDataPath , unCompressRoot , DSChar , m_assetPlatformPath);
 						#else
 						// 可行???
-						_m_appUnCompressPath =  Application.persistentDataPath + DSChar + unCompressRoot + DSChar;
+						_m_appUnCompressPath = string.Format("{0}{1}{2}{3}",m_persistentDataPath , unCompressRoot , DSChar , m_assetPlatformPath);
 						#endif
 					#endif
+					_m_appUnCompressPath = ReplaceSeparator (_m_appUnCompressPath);
 				}
 				return _m_appUnCompressPath;
 			}
@@ -136,6 +188,15 @@ namespace Core.Kernel{
 				m_platform = platformIOS;
 				return m_appContentPath;
 			}
+		}
+
+		/// <summary>
+		/// 统一路径格式
+		/// </summary>
+		/// <returns>The separator.</returns>
+		/// <param name="path">Path.</param>
+		static public string ReplaceSeparator(string path){
+			return path.Replace ('\\', '/');
 		}
 	}
 }

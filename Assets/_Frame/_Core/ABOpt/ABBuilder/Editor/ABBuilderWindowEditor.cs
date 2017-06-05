@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
+using System.Collections.Generic;
 
 /// <summary>
 /// 类名 : unity 5 以上的资源打包 window 窗体
@@ -16,7 +17,7 @@ public class ABBuilderWindowEditor : EditorWindow {
 
 	// 窗体宽高
 	static public float width = 600;
-	static public float height = 235;
+	static public float height = 635;
 
 	[MenuItem("Tools/BuildABWindows")]
 	static void AddWindow()
@@ -55,10 +56,36 @@ public class ABBuilderWindowEditor : EditorWindow {
 		vwWindow = null;
 	}
 
+	void OnEnable(){
+		m_Object = new SerializedObject (this);
+		m_Property = m_Object.FindProperty ("_assetList");
+	}
+
 	void OnDestroy()
 	{
 		OnClearSWindow();
 	}
+
+	// 在给定检视面板每秒10帧更新
+	void OnInspectorUpdate()
+	{
+		Repaint();
+	}
+
+	//序列化对象
+	SerializedObject m_Object;
+
+	//序列化属性
+	SerializedProperty m_Property;
+
+	[SerializeField]
+	protected List<UnityEngine.Object> _assetList = new List<UnityEngine.Object>();
+
+	// 编译协议
+	EL_Protobuf builderProtobuf = new EL_Protobuf();
+
+	// 编译 资源
+	EL_AssetRes builderRes = new EL_AssetRes();
 
 	void OnGUI(){
 		EG_GUIHelper.FEG_BeginV ();
@@ -75,6 +102,12 @@ public class ABBuilderWindowEditor : EditorWindow {
 				style.alignment = TextAnchor.MiddleLeft;
 			}
 			EG_GUIHelper.FEG_EndH ();
+
+			builderProtobuf.DrawView ();
+
+			EG_GUIHelper.FG_Space(10);
+
+			builderRes.DrawView(this.m_Object,this.m_Property,_assetList);
 		}
 		EG_GUIHelper.FEG_EndV ();
 	}
