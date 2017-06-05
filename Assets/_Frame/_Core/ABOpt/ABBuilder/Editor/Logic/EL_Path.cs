@@ -46,6 +46,10 @@ namespace Core.Kernel{
 			Recursive (path);
 		}
 
+		static public void Append(string path){
+			Recursive (path);
+		}
+
 		static public void Clear()
 		{
 			paths.Clear();
