@@ -1,0 +1,22 @@
+﻿using UnityEngine;
+using System.Collections;
+using Core.Kernel;
+
+/// <summary>
+/// 类名 : #SCRIPTNAME#
+/// 作者 : Canyon
+/// 日期 : #datatime#
+/// 功能 : 
+/// </summary>
+public class #SCRIPTNAME# : Kernel {
+
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+}
