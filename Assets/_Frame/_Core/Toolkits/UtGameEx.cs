@@ -32,11 +32,11 @@ namespace Core.Kernel
 		{
 			bool isWorldPosStays = !isLocal;
 			trsf.SetParent (trsfParent, isWorldPosStays);
-//		if (isLocal) {
-//			trsf.localPosition = Vector3.zero;
-//			trsf.localEulerAngles = Vector3.zero;
-//			trsf.localScale = Vector3.one;
-//		}
+			if (isLocal) {
+				trsf.localPosition = Vector3.zero;
+				trsf.localEulerAngles = Vector3.zero;
+				trsf.localScale = Vector3.one;
+			}
 		}
 	}
 }
