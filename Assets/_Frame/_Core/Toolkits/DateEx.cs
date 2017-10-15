@@ -204,15 +204,20 @@ namespace Toolkits
 		/// 服务器 与 本地时间差(与Tick时间时间是1970,1,1)
 		/// </summary>
 		public static long diffMSTimeWithServer = 0;
-		static DateTime svDate = m_defDate;
 
 		public static void InitDiffServerTimeMS(long serverTimeMS){
 			diffMSTimeWithServer = serverTimeMS - ToDiffMS(nowDateUtc);
-			svDate = m_defDate.AddMilliseconds (serverTimeMS);
 		}
 
 		public static void InitDiffServerTime(long serverTimeSecond){
 			InitDiffServerTimeMS (serverTimeSecond * TIME_SECOND);
+		}
+		
+		// yyyy-MM-dd HH:mm:ss
+		public static void InitDiffServerTime(string y_m_d_h_m_s){
+			DateTime svDate = ParseToUtc(y_m_d_h_m_s,fmt_yyyy_MM_dd_HH_mm_ss);
+			TimeSpan ts = svDate - nowDateUtc;
+			diffMSTimeWithServer = (int) ts.TotalMilliseconds;
 		}
 
         public static long nowMSServerTime
@@ -225,13 +230,7 @@ namespace Toolkits
 
 		public static DateTime nowDateUtcServer{
 			get{
-				if (IsSame(svDate,m_defDate)) {
-					svDate = nowDateUtc;
-				} else {
-					TimeSpan ts = nowDateUtc - svDate;
-					svDate = svDate.Add (ts);
-				}
-				return svDate;
+				return nowDateUtc.AddMilliseconds(diffMSTimeWithServer);
 			}
 		}
 
