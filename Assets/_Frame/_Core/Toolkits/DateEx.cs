@@ -22,13 +22,13 @@ namespace Toolkits
         public const string fmt_yyyyMMddHHmm = "yyyyMMddHHmm";
 		public const string fmt_yyyyMMddHHmmss = "yyyyMMddHHmmss";
         public const string fmt_HH_mm_ss = "HH:mm:ss";
-        public const long TIME_MILLISECOND = 1;
-        public const long TIME_SECOND = 1000 * TIME_MILLISECOND;
-        public const long TIME_MINUTE = 60 * TIME_SECOND;
-        public const long TIME_HOUR = 60 * TIME_MINUTE;
-        public const long TIME_DAY = 24 * TIME_HOUR;
+		public const int TIME_MILLISECOND = 1;
+		public const int TIME_SECOND = 1000 * TIME_MILLISECOND;
+		public const int TIME_MINUTE = 60 * TIME_SECOND;
+		public const int TIME_HOUR = 60 * TIME_MINUTE;
+		public const int TIME_DAY = 24 * TIME_HOUR;
         public const long TIME_WEEK = 7 * TIME_DAY;
-        public const long TIME_YEAR = 365 * TIME_DAY;
+		public const long TIME_YEAR = 365 * (long)TIME_DAY;
 
 		/// <summary>
 		/// 默认开始时间是1970,1,1
