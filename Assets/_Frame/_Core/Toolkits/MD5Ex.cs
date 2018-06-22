@@ -41,7 +41,7 @@ namespace Toolkits
             {
                 return "";
             }
-            byte[] data = System.Text.Encoding.Default.GetBytes(val.ToString());
+            byte[] data = System.Text.Encoding.UTF8.GetBytes(val.ToString());
             return encrypt(data);
         }
 
