@@ -21,7 +21,7 @@ public class LightmapEx : MonoBehaviour
 				_lightmapDatas = new LightmapData[lightMaps.Length];
 				for (int i = 0; i < lightMaps.Length; i++) {
 					LightmapData ld = new LightmapData ();
-					ld.lightmapFar = lightMaps [i];
+					ld.lightmapColor = lightMaps [i];
 					_lightmapDatas [i] = ld;
 				}
 			}
