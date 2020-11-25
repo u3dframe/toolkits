@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 /// <summary>
 /// 类名 : 界面常用函数攻击
-/// 作者 : Canyon
+/// 作者 : Canyon / 龚阳辉
 /// 日期 : 2017-05-03 10:26
 /// 功能 : 
 /// </summary>

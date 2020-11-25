@@ -13,19 +13,19 @@ using System.Collections.Generic;
 
 public class EU_ScheduleTask : MonoBehaviour{
 
-	private static EU_ScheduleTask _m_instance;
+	private static EU_ScheduleTask _shareInstance;
 
-	static public EU_ScheduleTask m_instance
+	static public EU_ScheduleTask shareInstance
 	{
 		get
 		{
 			_NewMono ();
-			return _m_instance;
+			return _shareInstance;
 		}
 	}
 
 	static void _NewMono(){
-		if (_m_instance == null)
+		if (_shareInstance == null)
 		{
 			GameObject gobj = GameObject.Find("EU_ScheduleTimer");
 			if (gobj == null)
@@ -33,13 +33,13 @@ public class EU_ScheduleTask : MonoBehaviour{
 				gobj = new GameObject("EU_ScheduleTimer");
 			}
 
-			_m_instance = gobj.GetComponent<EU_ScheduleTask>();
-			if (_m_instance == null)
+			_shareInstance = gobj.GetComponent<EU_ScheduleTask>();
+			if (_shareInstance == null)
 			{
-				_m_instance = gobj.AddComponent<EU_ScheduleTask>();
+				_shareInstance = gobj.AddComponent<EU_ScheduleTask>();
 
 				#if UNITY_EDITOR
-				EditorApplication.update += _m_instance.OnUpdate;
+				EditorApplication.update += _shareInstance.OnUpdate;
 				#endif
 			}
 		}
@@ -64,9 +64,10 @@ public class EU_ScheduleTask : MonoBehaviour{
 
 	bool isRunning = true;
 
-	public void AddTask(float doT,System.Action call){
+	public EU_ScheduleTask AddTask(float doT,System.Action call){
 		TaskEntity em = new TaskEntity (doT, call);
 		list.Add (em);
+		return this;
 	}
 
 	public void DoTask(float doT,System.Action call){
@@ -126,14 +127,13 @@ public class EU_ScheduleTask : MonoBehaviour{
 		#endif
 		isRunning = false;
 
-		GameObject.DestroyImmediate (m_instance.gameObject);
+		GameObject.DestroyImmediate (shareInstance.gameObject);
 	}
 
 	// Update is called once per frame
 	void Update () {
-		#if !UNITY_EDITOR
-		OnUpdate();
-		#endif
+		if (Application.isPlaying)
+			OnUpdate();
 	}
 }
 
